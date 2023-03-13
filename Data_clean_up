@@ -1,0 +1,64 @@
+Import tremor data 
+
+clear console
+
+library(tidyverse)
+
+data <- read.csv("~/Desktop/TremorInfo.csv")
+
+%%%%% Age calculation %%%%%%
+
+data$D.O.B <- as.Date(data$D.O.B, format = "%d/%m/%Y")
+data$Age <- as.numeric(difftime(Sys.Date(), data$D.O.B, units = "days")/365.25)
+data$Age <- floor(data$Age)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+preHADSdep <- data$HADS.Anxiety
+preHADSanx <- data$HADS.Depression
+preHADSdep <- (preHADSdep/21)*100
+preHADSanx <- (preHADSanx/21)*100
+postHADSanx <- data$HADS.Anxiety.1
+postHADSdep <- data$HADS.Depression.1
+postHADSdep <- (postHADSdep/21)*100
+postHADSanx <- (postHADSanx/21)*100
+
+HADSdf <- cbind(preHADSdep, postHADSdep, preHADSanx, postHADSanx)
+HADSdf <- na.omit(HADSdf)
+
+disDur <- data$Disease.Duration.at.the.time.of.implant.in.year
+
+
+DOI <- data$Date.of.Implant
+DOI <- DOI[1:36]
+% DOI has / seperators, not hyphens which we require.
+DOI <- str_replace_all(DOI, "/", "-")
+DOI <- as.Date(DOI, format = "%d-%m-%Y")
+YearsSinceImp <- age(DOI)
+
+%%%%%%%% (FTM) TRS
+
+% TRS 1 (1-9) - TRS 2 (10-13) - TRS3 (14-21) - TRStot (TRS1+TRS2+TRS3)
+
+% These need to be multiplied by the respective total (unsure if this is 80 or 84, need to sort)
+
+preTRS1 <- data$Tremor.Rating.Scale...1.9
+postTRS1 <- data$Tremor.Rating.Scale...1.9.1
+
+preTRS2 <- data$Tremor.Rating.Scale...10.13
+postTRS2 <- data$Tremor.Rating.Scale...10.13.1
+
+preTRS3 <- data$Tremor.Rating.Scale...14.21
+postTRS3 <- data$Tremor.Rating.Scale...14.21.1
+
+preTRStot <- data$Tremor.Rating.Scale...Total
+postTRStot <- data$Tremor.Rating.Scale...Total.1
+
+dx <- data$Diagnosis
+
+% EQD-5D-3L
+
+pre_eq5d <- data$EQ.5D..Overall.Score.
+post_eq5d <- data$EQ.5D..Overall.Score..1
+
+df_Trem <- cbind(pre_eq5d, post_eq5d)
