@@ -1,0 +1,59 @@
+# HCP DSI STUDIO
+
+# Desikan-Killiany atlas.
+# Only DKT provided with DSI.
+# Downloaded DK atlas that looks similar to DKT in DSI.
+# It includes aseg though, so need to remove everything under 2000 (and including)
+
+# remove subcortical
+fslmaths ~/Desktop/CD_Morph/aparcaseg.nii.gz -thr 1000 ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz
+
+# remove ctx-lh-unknown (1000) and ctx-rh-unknown (2000)
+
+# remove ctx-lh-corpuscallosum (1004) and ctx-rh-corpuscallosum (2004)
+
+fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -thr 1000 -uthr 1000 -bin ~/Desktop/CD_Morph/aparcaseg_thr1.nii.gz
+fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -thr 1004 -uthr 1004 -bin ~/Desktop/CD_Morph/aparcaseg_thr2.nii.gz
+fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -thr 2000 -uthr 2000 -bin ~/Desktop/CD_Morph/aparcaseg_thr3.nii.gz
+fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -thr 2004 -uthr 2004 -bin ~/Desktop/CD_Morph/aparcaseg_thr4.nii.gz
+
+# Add up
+fslmaths /Users/neuro-239/Desktop/CD_Morph/aparcaseg_thr1.nii.gz -add /Users/neuro-239/Desktop/CD_Morph/aparcaseg_thr2.nii.gz -add /Users/neuro-239/Desktop/CD_Morph/aparcaseg_thr3.nii.gz -add /Users/neuro-239/Desktop/CD_Morph/aparcaseg_thr4.nii.gz ~/Desktop/CD_Morph/mask.nii.gz
+
+#Subtract from og
+fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -sub ~/Desktop/CD_Morph/mask.nii.gz ~/Desktop/CD_Morph/FreeSurferDK_Cortical.nii.gz
+
+# Have also obtained the DK parcellation text file, turn it into the format that DSI uses
+
+# Generate src files
+
+maindir=~/Downloads/HCP_Diff
+
+for dir in $(ls $maindir); do
+
+	SUB=${dir}
+
+# step 1: generate src files
+	dsi_studio --action=src --source=$maindir/${SUB}/T1w/Diffusion/data.nii.gz
+
+# step 2: generate native space FIB files
+
+	mkdir $maindir/${SUB}/T1w/Diffusion/fib
+
+	dsi_studio --action=rec --source=$maindir/${SUB}/T1w/Diffusion/data.nii.gz.src.gz --method=4 --param0=1.25 --output=$maindir/${SUB}/T1w/Diffusion/fib/
+
+# step 3: reconstruct tractoraphy across DK cortical, DK subcortical and SUIT (already doesn't include DCN)
+
+	# Use the "custom" atlas I made... 
+	# cp'd .nii.gz and .txt into: /Applications/dsi_studio.app/Contents/MacOS/atlas/ICBM152/ ... 
+	# I think the DKT subcortical is identical to the DK one?
+
+	dsi_studio --action=trk --source=$maindir/${SUB}/T1w/Diffusion/fib/*.fib.gz --fiber_count=100000 --output=no_file --connectivity=FreeSurferDK_Cortical,FreeSurferDKT_Subcortical,Cerebellum-SUIT --connectivity_value=count,trk --connectivity_output=measure
+
+	# Get out a ConMat thats values are the count (intersection/termination of streamlines) per DKT ROI
+
+	Surface-based linear models compared atrophy profiles in patients relative to controls, correcting for multiple comparisons using the false discovery rate (FDR) procedure (31).
+
+	
+
+done
