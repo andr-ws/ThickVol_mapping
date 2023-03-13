@@ -1,0 +1,24 @@
+# reqs DL-DiReCT
+
+conda create -y -n DL_DiReCT python=3.10
+source activate DL_DiReCT
+
+cd ${HOME}
+git clone https://github.com/SCAN-NRAD/DL-DiReCT.git
+cd DL-DiReCT
+pip install numpy && pip install -e .
+
+for dir in ~/Desktop/CervicalDystonia/T1/sub*; do
+
+SUB=${dir: -6}
+subj=${SUB/sub-/subj}
+
+echo $subj
+
+	dl+direct --subject ${subj} --bet $dir/${subj}_T1.nii $dir/ --model v6
+
+done
+
+DL-DiReCTing all of them....
+# CT maps -> result-thick.csv
+# SBCTX grey vol -> result-vol.csv
