@@ -1,0 +1,180 @@
+# R code for DL-DiReCT CT and GVol processing
+
+# Downloads folder contains HCP_Struct and HCP_diff for the morph and dwi processed files
+
+# CT file (lh/rh.aparc format) is stored as result-thick.csv
+# GVol file (aparc format) is stored as result-vol.csv
+
+# Each column will just be the file transposed, but need to make sure we get only the relevant labels.
+
+# For the summary statistics; as the ENIGMA does.
+# For each group: i.e., CD, you would have one file representing the average CT or GVol for each region and this would compared against the average from all HCP.
+
+-> CD_Vs_DT
+-> DT_Vs_ET
+-> CD_Vs_ET
+-> Dys_Vs_ET
+-> Trem_Vs_CD
+
+HCP=~/Downloads/HCP_Struct
+direc=~/Desktop/HCP_Analysis
+
+for dir in $(ls $HCP); do
+
+	SUB=${dir: -6}
+	SUB2="sub-$SUB"
+	echo $SUB2
+	mkdir $direc/sub-${SUB}
+
+
+		cp $HCP/${SUB}/MNINonLinear/T1w.nii.gz $direc/${SUB2}/T1w.nii.gz
+		cp $HCP/${SUB}/T1w/${SUB}/stats/lh.aparc.stats $direc/${SUB2}/lh.aparc.stats
+		cp $HCP/${SUB}/T1w/${SUB}/stats/rh.aparc.stats $direc/${SUB2}/rh.aparc.stats
+		cp $HCP/${SUB}/T1w/${SUB}/stats/aseg.stats $direc/${SUB2}/aseg.stats
+
+done
+
+# SUIT Processed data
+
+# Need to combat before we can generate these files; DL-DiReCT'd layout...
+# order: lh CT, rh CT, lh subc Gvol, rh subc Gvol, lh rh interlinked [exclude 29:34 DCN], result-thick.csv - row 2, col 2:69
+
+# Create sub_ctx order file as follows: * Ventricles are optional later.
+
+sbctx_order <- c("left-accumbens", "left-amygdala", "left-caudate", "left-hippocampus", "left-pallidum", "left-putamen", "left-thalamus", "left-ventricles","right-accumbens", "right-amygdala", "right-caudate", "right-hippocampus", "right-pallidum", "right-putamen", "right-thalamus", "right-ventricles")
+
+# remove any possible white space
+sbctx_order <- trimws(sbctx_order)
+
+# Write the vector to a file [don't think i need too]
+# writeLines(subctxOrder, "~/Desktop/CD_Morph/subctx.txt")
+
+setwd("~/Desktop/CD_Morph")
+# this data direc needs to contain the DL-DiReCT outputs + SUIT lobules
+
+all_subdirs <- list.dirs(full.names = FALSE, recursive = TRUE)
+subdirs <- all_subdirs[grep("^sub", all_subdirs)]
+
+# empty df
+combined_data <- data.frame()
+
+for (subdir in subdirs) {
+
+	# extract direc name
+	sub <- basename(subdir)
+
+	# read in ctx-thick file
+	ctx_thick_pth <- paste0(subdir, "/result-thick.csv")
+	ctx_thick <- read.csv(ctx_thick_pth, check.names = FALSE)
+
+	ctx_thick_cols <- ctx_thick[,2:69]
+	ctx_thick_col <- t(ctx_thick_cols)
+
+	# Check names - false is critical to maintain underscores in colnames
+	sbctx_vols <- read.csv(paste0(subdir, "/result-vol.csv"), check.names = FALSE)
+
+	# Decapitalise colnames
+	colnames(sbctx_vols) <- tolower(colnames(sbctx_vols))
+
+	# Manual ammendments to labels
+
+	names(sbctx_vols)[names(sbctx_vols) == "left-thalamus-proper"] <- "left-thalamus"
+	names(sbctx_vols)[names(sbctx_vols) == "right-thalamus-proper"] <- "right-thalamus"
+	names(sbctx_vols)[names(sbctx_vols) == "left-accumbens-area"] <- "left-accumbens"
+	names(sbctx_vols)[names(sbctx_vols) == "right-accumbens-area"] <- "right-accumbens"
+
+	# Set one of the ventricles areas to match the label, won't use later anyway
+	names(sbctx_vols)[names(sbctx_vols) == "left-lateral-ventricle"] <- "left-ventricles"
+	names(sbctx_vols)[names(sbctx_vols) == "right-lateral-ventricle"] <- "right-ventricles"
+
+	cols_keep <- colnames(sbctx_vols) %in% sbctx_order
+	sbctx_vols_subset <- sbctx_vols[, cols_keep]
+	cols_order <- match(sbctx_order, colnames(sbctx_vols_subset))
+
+	sbctx_vols_subset <- sbctx_vols_subset[, cols_order]
+	sbctx_vols_col <- t(sbctx_vols_subset)
+
+	cb_vols <- read.table(paste0(subdir, "/lobule_vols.txt"), check.names = FALSE)
+	cb_vols_subset <- cb_vols[1:28,]
+	cb_vols_col <- t(t(cb_vols_subset)) # double transpose gets into correct format
+
+	ctx_thick_sbctx_vols <- rbind(ctx_thick_col,sbctx_vols_col)
+	output <- rbind(ctx_thick_sbctx_vols, cb_vols_col)
+
+	combined_data <- rbind(combined_data, t(output))
+
+}
+
+combined_data <- t(combined_data)
+write.csv(combined_data, file = "dat.csv", row.names = FALSE)
+
+
+
+
+
+# HCP data does not contain ages, given within a 4-year range and so, create 5 sets of ages
+
+# ComBat mod (correcting for age, sex (1 = F), etiv, group [hc = 1; CD = 2; DT = 3; ET = 4])
+# 15 HC (first) so [,1:15] will be used to index the age column that will iterate for each ComBat
+# 14 CD
+# N DT
+# N ET
+
+# read in hc data (mod)
+
+# Age is the only mod column that can vary (for hc)
+
+hc_mod <- csv.read('')
+base_age_hc <- c(40, 35, 35, 30, 45, 30, 30, 35, 30, 40, 30, 45, 45, 35, 40)
+
+# read in hc dat
+hc_dat <- csv.read('')
+
+# read in case mods
+
+cd_mod <- csv.read('~/Desktop/folder/cd_mod.csv')
+dt_mod <- csv.read('~/Desktop/folder/dt_mod.csv')
+et_mod <- csv.read('~/Desktop/folder/et_mod.csv')
+
+# combine to create one mod matrix
+case_mod <- data.frame(cd_mod, dt_mod)
+case_mod <- data.frame(case_mod, et_mod)
+
+# read in case dats
+cd_dat <- file.read
+dt_dat <- file.read
+et_dat <- file.read
+
+# combine to create one dat matrix
+case_dat <- data.frame(cd_dat, dt_dat)
+case_dat <- data.frame(case_dat, et_dat)
+
+# sort out a batch vector (order = hc first, CD, DT, ET)
+
+batch = c(1, 1 ... 2 etc)
+
+# combine dats (order = hc first, CD, DT, ET)
+
+comb_dat <- data.frame(hc_dat, case_dat)
+
+4 age ranges is 4 possible +1 iterations (start at base)
+range = 1:5
+
+for i in (range) {
+
+	comb_mod <- data.frame(hc_mod, case_mod)
+
+	age_col <- comb_mod[1:15,1]
+
+	combat_run <- combat(dat = comb_dat, batch = batch, mod = comb_mod)
+
+	write.table(file = combat_run, paste0('~/Desktop/ComBat_run_',i, '.csv')
+
+	age_col <- age_col + 1
+
+}
+
+# Should write out 5 harmonised data sets based on permuted age (hc only) within a 4-year range.
+
+# Somehow need to run models and then average
+
