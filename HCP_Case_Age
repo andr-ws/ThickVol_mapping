@@ -7,33 +7,6 @@
 
 # Each column will just be the file transposed, but need to make sure we get only the relevant labels.
 
-# For the summary statistics; as the ENIGMA does.
-# For each group: i.e., CD, you would have one file representing the average CT or GVol for each region and this would compared against the average from all HCP.
-
--> CD_Vs_DT
--> DT_Vs_ET
--> CD_Vs_ET
--> Dys_Vs_ET
--> Trem_Vs_CD
-
-HCP=~/Downloads/HCP_Struct
-direc=~/Desktop/HCP_Analysis
-
-for dir in $(ls $HCP); do
-
-	SUB=${dir: -6}
-	SUB2="sub-$SUB"
-	echo $SUB2
-	mkdir $direc/sub-${SUB}
-
-
-		cp $HCP/${SUB}/MNINonLinear/T1w.nii.gz $direc/${SUB2}/T1w.nii.gz
-		cp $HCP/${SUB}/T1w/${SUB}/stats/lh.aparc.stats $direc/${SUB2}/lh.aparc.stats
-		cp $HCP/${SUB}/T1w/${SUB}/stats/rh.aparc.stats $direc/${SUB2}/rh.aparc.stats
-		cp $HCP/${SUB}/T1w/${SUB}/stats/aseg.stats $direc/${SUB2}/aseg.stats
-
-done
-
 # SUIT Processed data
 
 # Need to combat before we can generate these files; DL-DiReCT'd layout...
