@@ -1,0 +1,55 @@
+# Bash code to create the repositories and format the control and case data
+    # ENIGMA formatting for the summary statistics:
+    # For each group: i.e., CD, one file =  average CT or GVol for each region and this would compared against the average from all HCP.
+
+# Where the control data is stored
+HCP_dir=~/Desktop/HCP_Struct
+
+# Where the CD data is stored
+CD_dir=~/Desktop/CD_Morph
+
+# Where the DT and ET data is stored
+Trem_dir=$d_dir/DL-DiReCT
+
+# Create directory to collate all DL-DiReCT data
+mkdir $d_dir/Morph_Mapping
+MM=$d_dir/Morph_Mapping
+
+for dir in $(ls $HCP); do
+
+	S=${dir}
+	SUB="sub-$SUB"
+
+	mkdir $MM/HC/sub-${SUB}
+
+		cp $HCP_dir/${S}/MNINonLinear/T1w.nii.gz $MM/HC/${SUB}/T1w.nii.gz
+		cp $HCP_dir/${S}/T1w/${SUB}/result-thick.csv $MM/HC/${SUB}/ct.csv # where ctx thickness stored
+		cp $HCP_dir/${S}/T1w/${SUB}/result-vol.csv $MM/HC/${SUB}/gmvol.csv # where sbctx gmv stored
+
+done
+
+for dir in $(ls $CD_dir); do
+  SUB=${dir}
+  
+  mkdir $MM/CD/${SUB}
+  
+  cp $dir/${SUB}/T1w.nii.gz $MM/CD/${SUB}/T1w.nii.gz
+  cp $dir/${SUB}/result-thick.csv $MM/CD/${SUB}/ct.csv # where ctx thickness stored
+  cp $dir/${SUB}/result-vol.csv $MM/CD/${SUB}/gmvol.csv # where sbctx gmv stored
+ 
+done
+
+for dir in $(ls $Trem_dir); do # Combined DT & ET, seperated later
+  SUB=${dir}
+  
+  mkdir $MM/TRM/${SUB}
+  
+  cp $dir/${SUB}/T1w.nii.gz $MM/CD/${SUB}/T1w.nii.gz
+  cp $dir/${SUB}/result-thick.csv $MM/CD/${SUB}/ct.csv # where ctx thickness stored
+  cp $dir/${SUB}/result-vol.csv $MM/CD/${SUB}/gmvol.csv # where sbctx gmv stored
+ 
+done
+
+
+  
+
