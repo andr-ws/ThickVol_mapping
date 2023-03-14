@@ -1,24 +1,46 @@
-# reqs DL-DiReCT
+# DL-DiReCTing all controls and cases
 
+# CT maps -> result-thick.csv
+# SBCTX grey vol -> result-vol.csv
+
+# reqs DL-DiReCT ----------------------------
 conda create -y -n DL_DiReCT python=3.10
 source activate DL_DiReCT
-
 cd ${HOME}
 git clone https://github.com/SCAN-NRAD/DL-DiReCT.git
 cd DL-DiReCT
 pip install numpy && pip install -e .
 
-for dir in ~/Desktop/CervicalDystonia/T1/sub*; do
+# -------------------------------------------
 
-SUB=${dir: -6}
-subj=${SUB/sub-/subj}
+# Morphometric Mapping directory 
 
-echo $subj
+# -------------------------------------------
 
-	dl+direct --subject ${subj} --bet $dir/${subj}_T1.nii $dir/ --model v6
+# Cervical dystonia directory
+CD_dir=~/Desktop/CD/T1
+for dir in $CD_dir/sub*; do
+	SUB=${dir: -6}
+	subj=${SUB/sub-/subj}
+	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/CD/${SUB} --model v6
+done
+# -------------------------------------------
 
+# Tremor (dystonic and essential) directory
+Trem_dir=~/Desktop/Tremor/derivatives/Tremor/ ... 
+for dir in $Trem_dir/sub*; do
+	SUB=${dir: -6}
+	subj=${SUB/sub-/subj}
+	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/TRM/${SUB} --model v6
+done
+# -------------------------------------------
+
+# Controls (HCP) directory
+HCP_dir=~/Desktop/HCP_Struct ... 
+for dir in $HCP_dir/sub*/anat; do
+	SUB=${dir: -6}
+	subj=${SUB/sub-/subj}
+	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/HC/${SUB} --model v6
 done
 
-DL-DiReCTing all of them....
-# CT maps -> result-thick.csv
-# SBCTX grey vol -> result-vol.csv
+
