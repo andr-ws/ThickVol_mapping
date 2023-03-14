@@ -12,13 +12,17 @@ cd DL-DiReCT
 pip install numpy && pip install -e .
 
 # -------------------------------------------
-
 # Morphometric Mapping directory 
+
+	# Create directory to collate all DL-DiReCT data
+		d_dir=~/Desktop/Tremor/data/derivatives
+		mkdir $d_dir/Morph_Mapping
+		MM=$d_dir/Morph_Mapping
 
 # -------------------------------------------
 
 # Cervical dystonia directory
-CD_dir=~/Desktop/CD/T1
+CD_dir=~/Desktop/CD_Morph/T1
 for dir in $CD_dir/sub*; do
 	SUB=${dir: -6}
 	subj=${SUB/sub-/subj}
@@ -42,5 +46,12 @@ for dir in $HCP_dir/sub*/anat; do
 	subj=${SUB/sub-/subj}
 	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/HC/${SUB} --model v6
 done
+
+
+
+# Bash code to create the repositories and format the control and case data
+    # ENIGMA formatting for the summary statistics:
+    # For each group: i.e., CD, one file =  average CT or GVol for each region and this would compared against the average from all HCP.
+
 
 
