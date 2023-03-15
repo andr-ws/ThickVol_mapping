@@ -1,29 +1,26 @@
 # R code for DL-DiReCT CT and GVol processing
 
-# Downloads folder contains HCP_Struct and HCP_diff for the morph and dwi processed files
+# HCP_Struct (DL-DiReCT'ed) 
+	# CT file (lh/rh.aparc format) is stored as result-thick.csv
+	# GVol file (aparc format) is stored as result-vol.csv
 
-# CT file (lh/rh.aparc format) is stored as result-thick.csv
-# GVol file (aparc format) is stored as result-vol.csv
+# HCP_diff (DSI'd)
 
 # Each column will just be the file transposed, but need to make sure we get only the relevant labels.
 
-# SUIT Processed data
+# ComBat to account for scanner differences...
 
-# Need to combat before we can generate these files; DL-DiReCT'd layout...
-# order: lh CT, rh CT, lh subc Gvol, rh subc Gvol, lh rh interlinked [exclude 29:34 DCN], result-thick.csv - row 2, col 2:69
+# DL-DiReCT layout = left CT, right CT, left subc Gvol, right subc Gvol, 
+	# result-thick.csv - row 2, col 2:69
 
-# Create sub_ctx order file as follows: * Ventricles are optional later.
+# Define sub_ctx order file as follows: * Ventricles are optional later.
 
-sbctx_order <- c("left-accumbens", "left-amygdala", "left-caudate", "left-hippocampus", "left-pallidum", "left-putamen", "left-thalamus", "left-ventricles","right-accumbens", "right-amygdala", "right-caudate", "right-hippocampus", "right-pallidum", "right-putamen", "right-thalamus", "right-ventricles")
+	sbctx_order <- c("left-accumbens", "left-amygdala", "left-caudate", "left-hippocampus", "left-pallidum", "left-putamen", "left-thalamus", "left-ventricles","right-accumbens", "right-amygdala", "right-caudate", "right-hippocampus", "right-pallidum", "right-putamen", "right-thalamus", "right-ventricles")
+	# remove any white space
+	sbctx_order <- trimws(sbctx_order)
 
-# remove any possible white space
-sbctx_order <- trimws(sbctx_order)
-
-# Write the vector to a file [don't think i need too]
-# writeLines(subctxOrder, "~/Desktop/CD_Morph/subctx.txt")
-
-setwd("~/Desktop/CD_Morph")
-# this data direc needs to contain the DL-DiReCT outputs + SUIT lobules
+# Where all DL-DiRecT outputs are stored
+setwd("~/Desktop/MM")
 
 all_subdirs <- list.dirs(full.names = FALSE, recursive = TRUE)
 subdirs <- all_subdirs[grep("^sub", all_subdirs)]
@@ -82,7 +79,7 @@ combined_data <- t(combined_data)
 write.csv(combined_data, file = "dat.csv", row.names = FALSE)
 
 
-
+# Matlab code for ComBaT
 
 
 # HCP data does not contain ages, given within a 4-year range and so, create 5 sets of ages
