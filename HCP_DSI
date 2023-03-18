@@ -33,6 +33,7 @@ deriv=~/Desktop/HCP_derivatives
 for dir in $(ls $main); do
 
 	SUB=${dir}
+	mkdir $deriv/${SUB}
 
 # step 1: generate src files
 
