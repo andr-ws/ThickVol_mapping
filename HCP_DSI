@@ -27,20 +27,26 @@ fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -sub ~/Desktop/CD_Morph/mask.ni
 
 # Generate src files
 
-maindir=~/Downloads/HCP_Diff
+main=~/Desktop/HCP_Diff
+deriv=~/Desktop/HCP_derivatives
 
 for dir in $(ls $maindir); do
 
 	SUB=${dir}
 
 # step 1: generate src files
-	dsi_studio --action=src --source=$maindir/${SUB}/T1w/Diffusion/data.nii.gz
 
+	dsi_studio --action=src --source=$main/${SUB}/diff/preproc/mri/diff_preproc.nii.gz \
+	--bval=$main/${SUB}/diff/preproc/bvals.txt \
+	--bvec=$main/${SUB}/diff/preproc/bvecs_moco_norm.txt \
+	--output=$deriv/${SUB}/
+	
 # step 2: generate native space FIB files
 
-	mkdir $maindir/${SUB}/T1w/Diffusion/fib
+	mkdir $deriv/${SUB}/fib
 
-	dsi_studio --action=rec --source=$maindir/${SUB}/T1w/Diffusion/data.nii.gz.src.gz --method=4 --param0=1.25 --output=$maindir/${SUB}/T1w/Diffusion/fib/
+	dsi_studio --action=rec --source=$deriv/${SUB}/T1w/Diffusion/data.nii.gz.src.gz \
+	--method=4 --param0=1.25 --output=$main/${SUB}/T1w/Diffusion/fib/
 
 # step 3: reconstruct tractoraphy across DK cortical, DK subcortical and SUIT (already doesn't include DCN)
 
@@ -48,12 +54,12 @@ for dir in $(ls $maindir); do
 	# cp'd .nii.gz and .txt into: /Applications/dsi_studio.app/Contents/MacOS/atlas/ICBM152/ ... 
 	# I think the DKT subcortical is identical to the DK one?
 
-	dsi_studio --action=trk --source=$maindir/${SUB}/T1w/Diffusion/fib/*.fib.gz --fiber_count=100000 --output=no_file --connectivity=FreeSurferDK_Cortical,FreeSurferDKT_Subcortical,Cerebellum-SUIT --connectivity_value=count,trk --connectivity_output=measure
+	dsi_studio --action=trk --source=$main/${SUB}/T1w/Diffusion/fib/*.fib.gz \
+	--fiber_count=100000 --output=no_file --connectivity=FreeSurferDK_Cortical,FreeSurferDKT_Subcortical,Cerebellum-SUIT \
+	--connectivity_value=count,trk --connectivity_output=measure
 
 	# Get out a ConMat thats values are the count (intersection/termination of streamlines) per DKT ROI
 
-	Surface-based linear models compared atrophy profiles in patients relative to controls, correcting for multiple comparisons using the false discovery rate (FDR) procedure (31).
-
-	
+	# Surface-based linear models compared atrophy profiles in patients relative to controls, correcting for multiple comparisons using the false discovery rate (FDR) procedure (31).
 
 done
