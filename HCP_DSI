@@ -44,8 +44,6 @@ for dir in $(ls $main); do
 	
 # step 2: generate native space FIB files
 
-	mkdir $deriv/${SUB}/fib
-
 	dsi_studio --action=rec --source=$deriv/${SUB}/diff_preproc.nii.gz.src.gz \
 	--method=4 --param0=1.25 --output=$deriv/${SUB}/
 
