@@ -44,7 +44,7 @@ for dir in $(ls $main); do
 	
 # step 2: generate native space FIB files
 
-	dsi_studio --action=rec --source=$deriv/${SUB}/diff_preproc.nii.gz.src.gz \
+	dsi_studio --action=rec --source=$deriv/${SUB}/diff_preproc.src.gz \
 	--method=4 --param0=1.25 --output=$deriv/${SUB}/
 
 # step 3: reconstruct tractoraphy across DK cortical, DK subcortical and SUIT (already doesn't include DCN)
