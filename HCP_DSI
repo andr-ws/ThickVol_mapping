@@ -27,7 +27,7 @@ fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -sub ~/Desktop/CD_Morph/mask.ni
 
 # Generate src files
 
-main=~/Desktop/HCP_Diff
+main=~/Desktop/HCP_DSI
 deriv=~/Desktop/HCP_derivatives
 
 for dir in $(ls $maindir); do
