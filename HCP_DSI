@@ -46,8 +46,8 @@ for dir in $(ls $main); do
 
 	mkdir $deriv/${SUB}/fib
 
-	dsi_studio --action=rec --source=$deriv/${SUB}/T1w/Diffusion/data.nii.gz.src.gz \
-	--method=4 --param0=1.25 --output=$main/${SUB}/T1w/Diffusion/fib/
+	dsi_studio --action=rec --source=$deriv/${SUB}/diff_preproc.nii.gz.src.gz \
+	--method=4 --param0=1.25 --output=$deriv/${SUB}/
 
 # step 3: reconstruct tractoraphy across DK cortical, DK subcortical and SUIT (already doesn't include DCN)
 
@@ -55,7 +55,7 @@ for dir in $(ls $main); do
 	# cp'd .nii.gz and .txt into: /Applications/dsi_studio.app/Contents/MacOS/atlas/ICBM152/ ... 
 	# I think the DKT subcortical is identical to the DK one?
 
-	dsi_studio --action=trk --source=$main/${SUB}/T1w/Diffusion/fib/*.fib.gz \
+	dsi_studio --action=trk --source=$deriv/${SUB}/*.fib.gz \
 	--fiber_count=100000 --output=no_file --connectivity=FreeSurferDK_Cortical,FreeSurferDKT_Subcortical,Cerebellum-SUIT \
 	--connectivity_value=count,trk --connectivity_output=measure
 
