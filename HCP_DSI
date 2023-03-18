@@ -30,7 +30,7 @@ fslmaths ~/Desktop/CD_Morph/aparcaseg_thr.nii.gz -sub ~/Desktop/CD_Morph/mask.ni
 main=~/Desktop/HCP_DSI
 deriv=~/Desktop/HCP_derivatives
 
-for dir in $(ls $maindir); do
+for dir in $(ls $main); do
 
 	SUB=${dir}
 
