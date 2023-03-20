@@ -82,9 +82,8 @@ write.csv(combined_data, file = "dat.csv", row.names = FALSE)
 
 # Matlab code for ComBaT
 
-
 # HCP data does not contain ages, given within a 4-year range and so, create 5 sets of ages
-# We could average these for the average age or just average the age?
+# I think I want to create these sets, average across them and use the average age (created as HCP_age.csv in HCP_derivatives directory)
 
 # ComBat mod (correcting for age, sex (1 = F), etiv, group [hc = 1; CD = 2; DT = 3; ET = 4])
 # 15 HC (first) so [,1:15] will be used to index the age column that will iterate for each ComBat
@@ -120,6 +119,8 @@ et_dat <- file.read
 # combine to create one dat matrix
 case_dat <- data.frame(cd_dat, dt_dat)
 case_dat <- data.frame(case_dat, et_dat)
+
+
 
 # sort out a batch vector (order = hc first, CD, DT, ET)
 
