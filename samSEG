@@ -23,7 +23,7 @@ cervical_dir=~/Desktop/CD/CD_MM
 
 for dir in $cervical_dir/*; do
   SUB=${dir: -6}
-  run_samseg --input $dir/${SUB}/${SUB}_T1.nii.gz --output $dir/${SUB}/sbTIV
+  run_samseg --input $dir/${SUB}/${SUB}_T1.nii --output $dir/${SUB}/sbTIV
   
   # sbtiv format is extract everything between the two commas
   file2=$dir/${SUB}/sbTIV/sbtiv.stats
