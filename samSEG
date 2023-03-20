@@ -2,8 +2,6 @@
 
 inDir=~/Desktop/HCP_DSI
 outDir=~/Desktop/HCP_derivatives
-outFile=$(touch $outDir/ebtiv.txt)
-outFile="$outDir/ebtiv.txt"
 
 for dir in $inDir/*; do
 
@@ -17,6 +15,6 @@ for dir in $inDir/*; do
   file=$outDir/${SUB}/sbTIV/sbtiv.stats
 
   ebtiv=$(cut -d ',' -f 2 $file | cut -d ' ' -f 2)
-  echo "$ebtiv" >> $outFile
+  echo "$ebtiv" >> $outDir/ebtiv.txt
     
 done
