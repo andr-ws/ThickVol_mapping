@@ -1,0 +1,20 @@
+# SAMseg (as part of FS) to be run to obtain the TIV estimate
+
+inDir= ~/Desktop/HCP_DSI
+outDir= ~/Desktop/HCP_derivatives
+outFile=$(touch $HCPdir/ebtiv.txt)
+
+for dir in $inDir; do
+
+  SUB=$dir
+
+  run_samseg --input $inDir/${SUB}/anat/T1/T1.nii.gz \ # point2 raw T1
+  --output $outDir/${SUB}/sbTIV # create and store sbtiv here
+  
+  # sbtiv format is extract everything between the two commas
+  file=$outDir/${SUB}/sbTIV/sbtiv.stats
+
+  ebtiv=$(cut -d ',' -f 2 $file | cut -d ' ' -f 2)
+  echo "$ebtiv" >> $outFile
+    
+done
