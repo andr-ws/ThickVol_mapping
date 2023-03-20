@@ -19,8 +19,9 @@
 	# remove any white space
 	sbctx_order <- trimws(sbctx_order)
 
-# Where all DL-DiRecT outputs are stored
-setwd("~/Desktop/MM")
+# Where all DL-DiRecT outputs are (or need to be) stored (Morphometric Mapping folder)
+dir.create("~/Desktop/Tremor/data/derivatives/MM")
+setwd("~/Desktop/Tremor/data/derivatives/MM")
 
 all_subdirs <- list.dirs(full.names = FALSE, recursive = TRUE)
 subdirs <- all_subdirs[grep("^sub", all_subdirs)]
@@ -83,6 +84,7 @@ write.csv(combined_data, file = "dat.csv", row.names = FALSE)
 
 
 # HCP data does not contain ages, given within a 4-year range and so, create 5 sets of ages
+# We could average these for the average age or just average the age?
 
 # ComBat mod (correcting for age, sex (1 = F), etiv, group [hc = 1; CD = 2; DT = 3; ET = 4])
 # 15 HC (first) so [,1:15] will be used to index the age column that will iterate for each ComBat
