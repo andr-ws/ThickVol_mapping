@@ -2,13 +2,15 @@
 
 inDir=~/Desktop/HCP_DSI
 outDir=~/Desktop/HCP_derivatives
-outFile=$(touch $ourDir/ebtiv.txt)
+outFile=$(touch $outDir/ebtiv.txt)
 
 for dir in $inDir/*; do
 
-  SUB=$dir
+  SUB=${dir}
+  SUB2=${dir: -8}
+  echo $SUB
 
-  run_samseg --input ${SUB}/anat/T1/T1.nii.gz --output $outDir/${SUB}/sbTIV
+  run_samseg --input ${SUB}/anat/T1/T1.nii.gz --output $outDir/${SUB2}/sbTIV
   
   # sbtiv format is extract everything between the two commas
   file=$outDir/${SUB}/sbTIV/sbtiv.stats
