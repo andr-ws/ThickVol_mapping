@@ -34,7 +34,8 @@ for dir in $cervical_dir/*; do
   echo "$ebtiv2" >> $cervical_dir/ebtiv.txt
     
 done
-  
+
+Need to run one of these for the tremor patients
 
 
 
