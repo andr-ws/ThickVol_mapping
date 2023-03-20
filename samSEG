@@ -30,13 +30,22 @@ for dir in $cervical_dir/*; do
   # sbtiv format is extract everything between the two commas
   file2=$dir/sbTIV/sbtiv.stats
 
-  ebtiv2=$(cut -d ',' -f 2 $file | cut -d ' ' -f 2)
+  ebtiv2=$(cut -d ',' -f 2 $file2 | cut -d ' ' -f 2)
   echo "$ebtiv2" >> $cervical_dir/ebtiv.txt
     
 done
 
-Need to run one of these for the tremor patients
+tremor_dir=~/Desktop/Tremor/data
 
+for dir in $tremor_dir/s*; do
+
+  SUB=${dir: -6}
+  run_samseg --input $dir/anat/${SUB}_T1w.nii.gz --output $tremor_dir/MM/${SUB}/sbTIV
+  file3=$tremor_dir/MM/${SUB}/sbTIV/sbtiv.stats
+  ebtiv3=$(cut -d ',' -f 2 $file3 | cut -d ' ' -f 2)
+  echo "$ebtiv3" >> $tremor_dir/MM/ebtiv.txt
+    
+done
 
 
 
