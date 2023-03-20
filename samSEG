@@ -8,7 +8,7 @@ for dir in $inDir; do
 
   SUB=$dir
 
-  run_samseg --input $inDir/${SUB}/anat/T1/T1.nii.gz --output $outDir/${SUB}/sbTIV
+  run_samseg --input ${SUB}/anat/T1/T1.nii.gz --output $outDir/${SUB}/sbTIV
   
   # sbtiv format is extract everything between the two commas
   file=$outDir/${SUB}/sbTIV/sbtiv.stats
