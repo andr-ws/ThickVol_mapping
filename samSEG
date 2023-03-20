@@ -12,7 +12,7 @@ for dir in $inDir/*; do
   run_samseg --input ${SUB}/anat/T1/T1.nii.gz --output $outDir/${SUB2}/sbTIV
   
   # sbtiv format is extract everything between the two commas
-  file=$outDir/${SUB}/sbTIV/sbtiv.stats
+  file=$outDir/${SUB2}/sbTIV/sbtiv.stats
 
   ebtiv=$(cut -d ',' -f 2 $file | cut -d ' ' -f 2)
   echo "$ebtiv" >> $outDir/ebtiv.txt
