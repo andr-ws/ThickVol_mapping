@@ -3,6 +3,7 @@
 inDir=~/Desktop/HCP_DSI
 outDir=~/Desktop/HCP_derivatives
 outFile=$(touch $outDir/ebtiv.txt)
+outFile="$outDir/ebtiv.txt"
 
 for dir in $inDir/*; do
 
