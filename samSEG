@@ -1,5 +1,8 @@
 # SAMseg (as part of FS) to be run to obtain the TIV estimate
 
+export FREESURFER_HOME=/Applications/freesurfer
+source $FREESURFER_HOME/SetUpFreeSurfer.sh
+
 inDir=~/Desktop/HCP_DSI
 outDir=~/Desktop/HCP_derivatives
 
