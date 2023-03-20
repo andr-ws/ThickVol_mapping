@@ -4,7 +4,7 @@ inDir=~/Desktop/HCP_DSI
 outDir=~/Desktop/HCP_derivatives
 outFile=$(touch $ourDir/ebtiv.txt)
 
-for dir in $inDir; do
+for dir in $inDir/*; do
 
   SUB=$dir
 
