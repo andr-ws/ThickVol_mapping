@@ -28,7 +28,7 @@ for dir in $cervical_dir/*; do
   SUB=${dir: -6}
   SUBJ="subj${dir: -2}" # files named subj-XX
 
-  run_samseg --input $dir/${SUBJ}_T1.nii.gz --output $dir/sbTIV
+  run_samseg --input $dir/${SUBJ}_T1.nii --output $dir/sbTIV
   
   # sbtiv format is extract everything between the two commas
   file2=$dir/sbTIV/sbtiv.stats
