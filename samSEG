@@ -44,7 +44,7 @@ for dir in $tremor_dir/s*; do
 
   SUB=${dir: -6}
   run_samseg --input $dir/anat/${SUB}_T1w.nii.gz --output $tremor_dir/MM/${SUB}/sbTIV
-  file3=$tremor_dir/MM/${SUB}/sbTIV/sbtiv.stats
+  file3=$tremor_dir/derivatives/MM/${SUB}/sbTIV/sbtiv.stats
   ebtiv3=$(cut -d ',' -f 2 $file3 | cut -d ' ' -f 2)
   echo "$ebtiv3" >> $tremor_dir/MM/ebtiv.txt
     
