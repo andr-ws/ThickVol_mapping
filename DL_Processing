@@ -1,9 +1,12 @@
-# DL-DiReCTing all controls and cases
+!/bin/bash 
 
-# CT maps -> result-thick.csv
-# SBCTX grey vol -> result-vol.csv
+# Code to perform DL-DiReCT on pd data
 
-# reqs DL-DiReCT ----------------------------
+BASE=/Users/neuero-239/Desktop/pd/
+MORPHDIR=${BASE}morphometry
+DLDIR=${MORPHDIR}dldirect
+
+# DL-DiReCT requirements
 conda create -y -n DL_DiReCT python=3.10
 source activate DL_DiReCT
 cd ${HOME}
@@ -11,47 +14,14 @@ git clone https://github.com/SCAN-NRAD/DL-DiReCT.git
 cd DL-DiReCT
 pip install numpy && pip install -e .
 
-# -------------------------------------------
-# Morphometric Mapping directory 
+for DIR in ${MORPHDIR}s*
+do
+	SUB=${basename ${DIR}
+	mkdir -p ${DLDIR}${SUB}
 
-	# Create directory to collate all DL-DiReCT data
-		d_dir=~/Desktop/Tremor/data/derivatives
-		mkdir $d_dir/Morph_Mapping
-		MM=$d_dir/Morph_Mapping
-
-# -------------------------------------------
-
-# Cervical dystonia directory
-CD_dir=~/Desktop/CD_Morph/T1
-for dir in $CD_dir/sub*; do
-	SUB=${dir: -6}
-	subj=${SUB/sub-/subj}
-	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/CD/${SUB} --model v6
+	dl+direct \
+		--subject ${SUB} \
+		--bet ${DIR}/T1p.nii.gz \ # point to biasfieldcorrected?
+		${DLDIR}${SUB} \
+		--model v6
 done
-# -------------------------------------------
-
-# Tremor (dystonic and essential) directory
-Trem_dir=~/Desktop/Tremor/derivatives/Tremor/ ... 
-for dir in $Trem_dir/sub*; do
-	SUB=${dir: -6}
-	subj=${SUB/sub-/subj}
-	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/TRM/${SUB} --model v6
-done
-# -------------------------------------------
-
-# Controls (HCP) directory
-HCP_dir=~/Desktop/HCP_Struct ... 
-for dir in $HCP_dir/sub*/anat; do
-	SUB=${dir: -6}
-	subj=${SUB/sub-/subj}
-	dl+direct --subject ${subj} --bet $dir/T1w.nii.gz $MM/HC/${SUB} --model v6
-done
-
-
-
-# Bash code to create the repositories and format the control and case data
-    # ENIGMA formatting for the summary statistics:
-    # For each group: i.e., CD, one file =  average CT or GVol for each region and this would compared against the average from all HCP.
-
-
-
