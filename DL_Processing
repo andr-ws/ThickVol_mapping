@@ -2,8 +2,8 @@
 
 # Code to perform DL-DiReCT on pd data
 
-base=/Users/neuero-239/imaging/datasets/pd
-anat=${base}/derivatives/data
+base=/Users/neuro-239/imaging/datasets/pd
+anat=${base}/derivatives/anat
 
 # DL-DiReCT requirements
 #conda create -y -n DL_DiReCT python=3.10
@@ -14,7 +14,7 @@ source activate DL_DiReCT
 #pip install numpy && pip install -e .
 
 for dir in ${anat}/sub-*; do
-	sub=${basename ${dir}
+	sub=$(basename ${dir})
 	mkdir -p ${dir}/${dldirect}
 
 	dl+direct \
