@@ -3,7 +3,7 @@
 # Code to perform DL-DiReCT on pd data
 
 base=/Users/neuero-239/imaging/datasets/pd
-anat=${BASE}morphometry
+anat=${base}/derivatives/data
 
 # DL-DiReCT requirements
 #conda create -y -n DL_DiReCT python=3.10
